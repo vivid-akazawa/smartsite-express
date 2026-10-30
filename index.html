@@ -1,0 +1,607 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="SmartSite Express は、AIでつくった動く試作サイトを見ながら打ち合わせを進め、そのままWordPressで本番化するWeb制作サービスです。">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>SmartSite Express</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap">
+<style>
+/* Layout: 参考LPに倣い、淡い空色の地に白カード。ヒーロー→青いパネル→巨大ワードマーク→お悩み→青い曲面の進め方→理由→事例→FAQ→CTA。
+   単一テーマ（明るい配色）で意図的に固定する */
+:root {
+  --ink: #15244a;
+  --ink-soft: #4a5878;
+  --sky: #f1f6fd;
+  --paper: #ffffff;
+  --blue: #2563e6;
+  --cyan: #1dbbd6;
+  --deep: #1d4fc4;
+  --mist: #dbe7fb;
+  --lime: #cdf24a;
+  --orange: #ff7a3d;
+  --grad: linear-gradient(110deg, var(--blue) 0%, #2f86e8 45%, var(--cyan) 100%);
+  --font-jp: "Zen Kaku Gothic New", "Hiragino Sans", "Noto Sans JP", "Yu Gothic", sans-serif;
+  --font-en: "Lexend", "Zen Kaku Gothic New", "Hiragino Sans", sans-serif;
+  --shadow: 0 10px 30px -12px rgba(30, 70, 160, .28);
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+body { background: var(--sky); color: var(--ink); font-family: var(--font-jp); font-size: 15px; line-height: 1.8; letter-spacing: .02em; overflow-x: hidden; }
+a { color: inherit; }
+h1, h2, h3 { text-wrap: balance; margin: 0; line-height: 1.4; }
+p { margin: 0; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.grad-text { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+:focus-visible { outline: 3px solid var(--cyan); outline-offset: 3px; border-radius: 6px; }
+
+/* ---------- header ---------- */
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: rgba(255,255,255,.92); }
+.site-header { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 9; background: rgba(255,255,255,.88); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(37,99,230,.08); }
+.site-header .wrap { display: flex; align-items: center; gap: 24px; height: 68px; }
+.logo { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; }
+.logo-mark { width: 38px; height: 38px; flex-shrink: 0; }
+.logo-type { display: grid; line-height: 1.1; }
+.logo-name { font-family: var(--font-en); font-weight: 800; font-size: 19px; letter-spacing: -.01em; color: var(--deep); }
+.logo-name span { color: var(--cyan); }
+.logo-sub { font-family: var(--font-en); font-size: 8.5px; font-weight: 700; letter-spacing: .32em; color: var(--ink-soft); }
+.logo-tag { font-size: 10px; line-height: 1.4; color: var(--ink-soft); border-left: 1px solid var(--mist); padding-left: 12px; margin-left: 2px; }
+.nav { display: flex; gap: 22px; margin-left: auto; font-size: 13px; font-weight: 700; }
+.nav a { text-decoration: none; color: var(--ink); }
+.nav a:hover { color: var(--blue); }
+.header-cta { display: flex; gap: 8px; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-weight: 700; text-decoration: none; border-radius: 999px; padding: 9px 20px; font-size: 13px; white-space: nowrap; transition: transform .2s, box-shadow .2s; }
+.btn:hover { transform: translateY(-1px); }
+.btn-fill { background: var(--grad); color: #fff; box-shadow: 0 6px 16px -6px rgba(37,99,230,.55); }
+.btn-line { border: 1.5px solid var(--blue); color: var(--blue); background: #fff; }
+
+/* ---------- hero ---------- */
+.hero { position: relative; overflow: hidden; background: #fff; }
+.hero .wrap { display: grid; grid-template-columns: 1.02fr 1fr; align-items: center; gap: 24px; padding-block: 56px 120px; }
+.hero-copy { position: relative; z-index: 2; min-width: 0; }
+.eyebrow { font-weight: 700; color: var(--blue); font-size: 15px; letter-spacing: .08em; display: inline-flex; align-items: center; gap: 10px; }
+.eyebrow::before { content: ""; width: 26px; height: 2px; background: var(--grad); border-radius: 2px; }
+.hero h1 { font-size: clamp(28px, 4vw, 47px); font-weight: 900; margin-top: 18px; letter-spacing: .02em; line-height: 1.45; }
+.nw { display: inline-block; white-space: nowrap; }
+.dots { text-emphasis: filled circle var(--cyan); -webkit-text-emphasis: filled circle var(--cyan); text-emphasis-position: over right; -webkit-text-emphasis-position: over; }
+.hero-lead { margin-top: 22px; font-size: 15px; color: var(--ink-soft); max-width: 30em; }
+.hero-lead strong { color: var(--ink); }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+.hero-actions .btn { font-size: 15px; padding: 14px 28px; }
+.badge { position: absolute; z-index: 3; top: 18px; right: 6%; width: 116px; height: 116px; border-radius: 50%; background: var(--lime); display: grid; place-content: center; text-align: center; font-weight: 900; color: var(--deep); line-height: 1.2; box-shadow: 0 10px 24px -10px rgba(120,160,0,.6); transform: rotate(-8deg); }
+.badge small { display: block; font-size: 11px; font-weight: 700; }
+.badge b { font-family: var(--font-en); font-size: 38px; font-weight: 800; line-height: 1; }
+.badge b span { font-family: var(--font-jp); font-size: 15px; margin-left: 2px; }
+
+.hero-art { position: relative; height: 440px; min-width: 0; }
+.hero-art::before { content: ""; position: absolute; width: 520px; height: 520px; border-radius: 50%; left: 50%; top: 50%; transform: translate(-46%, -50%); background: radial-gradient(circle at 40% 40%, #eef5ff 0%, #e3efff 55%, #d9f3f8 100%); }
+.iso { position: absolute; left: 50%; top: 52%; width: 0; height: 0; transform: scale(var(--iso-s, 1)); }
+.iso-stage { position: absolute; left: -150px; top: -105px; width: 300px; height: 210px; transform: rotateX(58deg) rotateZ(-42deg); transform-style: preserve-3d; }
+.layer { position: absolute; inset: 0; border-radius: 14px; overflow: hidden; }
+.layer-1 { transform: translateZ(0); background: #c9dbf7; box-shadow: 0 0 0 1px rgba(37,99,230,.15), 18px 18px 30px rgba(30,70,160,.18); }
+.layer-2 { transform: translateZ(70px); background: linear-gradient(135deg, #6ad7e8, #3a8ff0); box-shadow: 0 0 0 1px rgba(255,255,255,.35); opacity: .92; }
+.layer-3 { transform: translateZ(140px); background: #fff; box-shadow: 0 0 0 1px rgba(37,99,230,.12), 22px 22px 40px rgba(30,70,160,.22); }
+.chrome { height: 24px; display: flex; align-items: center; gap: 5px; padding: 0 10px; background: rgba(255,255,255,.55); }
+.layer-3 .chrome { background: var(--grad); }
+.chrome i { width: 6px; height: 6px; border-radius: 50%; background: rgba(21,36,74,.25); }
+.layer-3 .chrome i { background: rgba(255,255,255,.7); }
+.chrome span { margin-left: 8px; font-family: var(--font-en); font-size: 9px; font-weight: 700; color: var(--deep); letter-spacing: .05em; }
+.layer-3 .chrome span { color: #fff; }
+.mock { padding: 12px; display: grid; gap: 8px; }
+.mock .bar { height: 46px; border-radius: 6px; background: rgba(255,255,255,.55); }
+.mock .row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.mock .row i { height: 40px; border-radius: 5px; background: rgba(255,255,255,.55); }
+.mock .ln { height: 6px; border-radius: 3px; background: rgba(255,255,255,.6); width: 70%; }
+.layer-1 .mock * { background: rgba(255,255,255,.5); outline: 1px dashed rgba(37,99,230,.35); }
+.layer-3 .mock .bar { background: linear-gradient(120deg, #dbe9ff, #d5f4f8); }
+.layer-3 .mock .row i { background: #eef4fd; }
+.layer-3 .mock .ln { background: #dbe7fb; }
+.float { position: absolute; z-index: 2; animation: bob 5s ease-in-out infinite; }
+.float.f2 { animation-delay: -1.6s; }
+.float.f3 { animation-delay: -3.1s; }
+@keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+.art-label { position: absolute; z-index: 2; background: #fff; border-radius: 999px; padding: 5px 14px; font-size: 12px; font-weight: 700; box-shadow: var(--shadow); white-space: nowrap; display: flex; align-items: center; gap: 6px; }
+.art-label::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--c, var(--blue)); }
+
+/* ---------- finder panel ---------- */
+.finder { margin-top: -84px; position: relative; z-index: 3; }
+.panel { background: linear-gradient(125deg, #2a62e3 0%, #2f8ae6 55%, #33c4d6 100%); border-radius: 26px; padding: 34px 32px 32px; color: #fff; box-shadow: 0 30px 60px -30px rgba(29,79,196,.6); }
+.panel-head { display: flex; flex-wrap: wrap; gap: 18px 32px; align-items: center; justify-content: space-between; }
+.panel-head h2 { font-size: clamp(20px, 2.4vw, 25px); font-weight: 900; }
+.panel-head p { font-size: 13px; opacity: .9; margin-top: 4px; }
+.panel-cta { display: flex; align-items: center; gap: 12px; background: #fff; color: var(--ink-soft); border-radius: 999px; padding: 6px 6px 6px 22px; font-size: 13px; text-decoration: none; min-width: 0; }
+.panel-cta b { background: var(--grad); color: #fff; border-radius: 999px; padding: 8px 18px; font-size: 13px; white-space: nowrap; }
+.panel-body { display: grid; grid-template-columns: 1.6fr 1fr; gap: 28px; margin-top: 28px; }
+.col-title { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 14px; margin-bottom: 12px; }
+.col-title svg { width: 16px; height: 16px; }
+.cats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.cat { position: relative; display: flex; gap: 14px; align-items: center; background: #fff; color: var(--ink); text-decoration: none; border-radius: 12px; padding: 16px 40px 16px 16px; min-width: 0; transition: transform .2s; }
+.cat:hover { transform: translateY(-2px); }
+.cat-ico { width: 46px; height: 46px; flex-shrink: 0; border-radius: 12px; background: linear-gradient(140deg, #e7f0ff, #dcf5f9); display: grid; place-items: center; }
+.cat-ico svg { width: 26px; height: 26px; }
+.cat strong { display: block; font-size: 14.5px; line-height: 1.4; }
+.cat small { display: block; font-size: 11.5px; color: var(--ink-soft); line-height: 1.5; margin-top: 2px; }
+.chev { position: absolute; right: 12px; bottom: 12px; width: 20px; height: 20px; border-radius: 50%; background: var(--blue); display: grid; place-items: center; }
+.chev svg { width: 10px; height: 10px; }
+.issues { display: grid; gap: 8px; }
+.issue { display: flex; align-items: center; gap: 8px; background: #fff; color: var(--ink); text-decoration: none; border-radius: 10px; padding: 10px 12px 10px 16px; font-size: 13px; font-weight: 500; line-height: 1.45; }
+.issue:hover { background: #f4f8ff; }
+.issue .tag { font-size: 10px; font-weight: 700; color: var(--orange); border: 1px solid var(--orange); border-radius: 4px; padding: 0 5px; white-space: nowrap; }
+.issue .go { margin-left: auto; width: 20px; height: 20px; flex-shrink: 0; border-radius: 50%; background: var(--blue); display: grid; place-items: center; }
+.issue .go svg { width: 9px; height: 9px; }
+
+/* ---------- wordmark & about ---------- */
+.wordmark { font-family: var(--font-en); font-weight: 800; font-size: clamp(44px, 11.2vw, 150px); line-height: .95; letter-spacing: -.02em; text-align: center; margin-top: 64px; background: linear-gradient(100deg, #c5d8fb 0%, #cfe2fb 50%, #c4eef4 100%); -webkit-background-clip: text; background-clip: text; color: transparent; user-select: none; overflow-wrap: anywhere; }
+.about { padding-block: 8px 72px; text-align: center; }
+.sec-title { font-size: clamp(24px, 3vw, 32px); font-weight: 900; }
+.sec-title .en { display: block; font-family: var(--font-en); font-size: 12px; font-weight: 700; letter-spacing: .3em; color: var(--blue); margin-bottom: 8px; }
+.ask { margin-top: 40px; font-size: 17px; font-weight: 700; }
+.ask em { font-style: normal; color: var(--blue); border-bottom: 3px solid rgba(29,187,214,.45); }
+.pains { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 26px; text-align: left; }
+.pain { position: relative; background: #fff; border-radius: 16px; padding: 24px 24px 26px; box-shadow: var(--shadow); }
+.pain::after { content: ""; position: absolute; left: 50%; bottom: -10px; width: 20px; height: 20px; background: #fff; transform: translateX(-50%) rotate(45deg); border-radius: 3px; }
+.pain h3 { font-size: 16px; color: var(--blue); text-align: center; }
+.pain p { font-size: 13.5px; color: var(--ink-soft); margin-top: 10px; line-height: 1.75; }
+.down { display: grid; justify-items: center; margin: 38px auto 18px; width: 64px; }
+.down svg { width: 64px; height: 64px; }
+.answer { position: relative; max-width: 760px; margin: 0 auto; padding-block: 104px 24px; }
+.answer p.lead { font-size: 15px; font-weight: 700; }
+.answer h3 { font-size: clamp(22px, 3vw, 31px); font-weight: 900; margin-top: 4px; line-height: 1.55; }
+.answer h3 .u { background: linear-gradient(transparent 68%, rgba(29,187,214,.25) 68%); }
+.chips { position: absolute; inset: 0; pointer-events: none; }
+.chip { position: absolute; background: #fff; border-radius: 6px; padding: 3px 10px; font-size: 11.5px; font-weight: 700; color: var(--ink); box-shadow: 0 6px 14px -8px rgba(30,70,160,.35); white-space: nowrap; }
+
+/* ---------- flow (blue curved band) ---------- */
+.flow { position: relative; background: linear-gradient(180deg, #2a62e3 0%, #2b6fe4 60%, #2f86e6 100%); color: #fff; padding-block: 110px 96px; border-radius: 50% 50% 0 0 / 120px 120px 0 0; overflow: hidden; }
+.flow::before, .flow::after { content: ""; position: absolute; border-radius: 50%; border: 60px solid rgba(255,255,255,.05); }
+.flow::before { width: 520px; height: 520px; left: -220px; top: 120px; }
+.flow::after { width: 380px; height: 380px; right: -140px; bottom: -120px; }
+.flow .wrap { position: relative; z-index: 1; }
+.flow-head { text-align: center; }
+.flow-head .sec-title .en { color: var(--lime); }
+.flow-head p { margin-top: 16px; font-size: 15px; opacity: .95; }
+.steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-top: 44px; counter-reset: step; }
+.step { position: relative; background: #fff; color: var(--ink); border-radius: 16px; padding: 22px 20px 24px; display: flex; flex-direction: column; min-width: 0; }
+.step-no { position: absolute; top: 0; left: 0; font-family: var(--font-en); font-weight: 800; font-size: 15px; color: var(--blue); background: #e8f0fe; border-radius: 16px 0 14px 0; padding: 6px 14px; }
+.step-art { height: 104px; display: grid; place-items: center; margin-top: 14px; }
+.step-art svg { width: 116px; height: 96px; }
+.step h3 { font-size: 16px; text-align: center; margin-top: 10px; }
+.step h3 small { display: block; font-size: 11px; color: var(--blue); font-family: var(--font-en); letter-spacing: .14em; font-weight: 700; }
+.step p { font-size: 13px; color: var(--ink-soft); margin-top: 10px; line-height: 1.75; }
+.step:not(:last-child)::after { content: ""; position: absolute; right: -14px; top: 50%; width: 10px; height: 10px; border-top: 3px solid var(--lime); border-right: 3px solid var(--lime); transform: translateY(-50%) rotate(45deg); z-index: 1; }
+
+/* ---------- reasons ---------- */
+.reasons { padding-block: 88px 40px; }
+.reasons .sec-title { text-align: center; }
+.reason-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 40px; }
+.reason { display: grid; grid-template-columns: 88px 1fr; gap: 20px; align-items: start; background: #fff; border-radius: 18px; padding: 26px 28px; box-shadow: var(--shadow); min-width: 0; }
+.reason-ico { width: 88px; height: 88px; border-radius: 22px; background: linear-gradient(140deg, #e7f0ff, #d9f4f8); display: grid; place-items: center; }
+.reason-ico svg { width: 56px; height: 56px; }
+.reason h3 { font-size: 17px; }
+.reason p { font-size: 13.5px; color: var(--ink-soft); margin-top: 8px; }
+
+/* ---------- case ---------- */
+.case { padding-block: 48px 40px; }
+.case-card { background: #fff; border-radius: 24px; box-shadow: var(--shadow); display: grid; grid-template-columns: 1fr 1.05fr; overflow: hidden; }
+.case-text { padding: 38px 36px; min-width: 0; }
+.case-label { display: inline-block; font-family: var(--font-en); font-weight: 700; font-size: 11px; letter-spacing: .26em; color: #fff; background: var(--grad); border-radius: 999px; padding: 3px 14px; }
+.case-who { font-size: 12.5px; color: var(--ink-soft); margin-top: 16px; }
+.case-text h2 { font-size: clamp(20px, 2.4vw, 25px); font-weight: 900; margin-top: 6px; }
+.case-list { list-style: none; padding: 0; margin: 20px 0 0; display: grid; gap: 10px; font-size: 13.5px; }
+.case-list li { display: flex; gap: 10px; align-items: flex-start; }
+.case-list li::before { content: ""; flex-shrink: 0; width: 18px; height: 18px; margin-top: 3px; border-radius: 50%; background: var(--cyan) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 8.5l2.5 2.5L12 5.5' fill='none' stroke='white' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/12px no-repeat; }
+.case-chart { background: linear-gradient(140deg, #eef4ff, #e3f6f9); padding: 38px 36px; display: flex; flex-direction: column; justify-content: center; min-width: 0; }
+.case-chart h3 { font-size: 14px; color: var(--ink-soft); font-weight: 700; }
+.bars { display: grid; gap: 22px; margin-top: 22px; }
+.bar-row { display: grid; gap: 6px; }
+.bar-row .lbl { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; font-size: 13px; font-weight: 700; }
+.bar-row .val { font-family: var(--font-en); font-variant-numeric: tabular-nums; font-size: 15px; white-space: nowrap; }
+.bar-row .val b { font-size: 30px; font-weight: 800; }
+.track { height: 18px; border-radius: 999px; background: rgba(37,99,230,.08); overflow: hidden; }
+.track i { display: block; height: 100%; border-radius: 999px; }
+.bar-plan .track i { width: 100%; background: #b8c6dd; }
+.bar-plan .val { color: var(--ink-soft); }
+.bar-real .track i { width: 34.3%; background: var(--grad); }
+.bar-real .val { color: var(--blue); }
+.scale { display: flex; justify-content: space-between; font-family: var(--font-en); font-size: 10.5px; color: var(--ink-soft); margin-top: 6px; font-variant-numeric: tabular-nums; }
+.note { font-size: 11.5px; color: var(--ink-soft); margin-top: 18px; line-height: 1.7; }
+
+/* ---------- faq ---------- */
+.faq { padding-block: 64px 88px; }
+.faq .sec-title { text-align: center; }
+.faq-list { max-width: 820px; margin: 36px auto 0; display: grid; gap: 12px; }
+.faq details { background: #fff; border-radius: 14px; box-shadow: 0 6px 18px -12px rgba(30,70,160,.3); }
+.faq summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 14px; padding: 18px 22px; font-weight: 700; font-size: 15px; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::before { content: "Q"; font-family: var(--font-en); font-weight: 800; color: #fff; background: var(--grad); width: 30px; height: 30px; flex-shrink: 0; border-radius: 50%; display: grid; place-items: center; font-size: 14px; }
+.faq summary::after { content: ""; margin-left: auto; flex-shrink: 0; width: 9px; height: 9px; border-right: 2.5px solid var(--blue); border-bottom: 2.5px solid var(--blue); transform: rotate(45deg); transition: transform .2s; }
+.faq details[open] summary::after { transform: rotate(-135deg); }
+.faq .a { padding: 0 22px 20px 66px; font-size: 14px; color: var(--ink-soft); }
+
+/* ---------- cta & footer ---------- */
+.cta { background: var(--grad); color: #fff; text-align: center; padding-block: 72px; position: relative; overflow: hidden; }
+.cta::before { content: "EXPRESS"; position: absolute; left: 50%; bottom: -24px; transform: translateX(-50%); font-family: var(--font-en); font-weight: 800; font-size: clamp(80px, 16vw, 210px); color: rgba(255,255,255,.08); line-height: 1; white-space: nowrap; pointer-events: none; }
+.cta .wrap { position: relative; }
+.cta h2 { font-size: clamp(24px, 3.4vw, 36px); font-weight: 900; }
+.cta p { margin-top: 12px; font-size: 15px; opacity: .95; }
+.cta-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin-top: 30px; }
+.cta-actions .btn { font-size: 16px; padding: 16px 34px; }
+.cta .btn-white { background: #fff; color: var(--blue); box-shadow: 0 10px 24px -10px rgba(0,0,0,.35); }
+.cta .btn-ghost { border: 1.5px solid rgba(255,255,255,.85); color: #fff; }
+.site-footer { background: var(--ink); color: #c5cfe4; padding-block: 36px; font-size: 12.5px; }
+.site-footer .wrap { display: flex; flex-wrap: wrap; gap: 16px 32px; align-items: center; justify-content: space-between; }
+.site-footer .logo-name { color: #fff; }
+.site-footer .logo-sub { color: #9fb0d2; }
+.foot-links { display: flex; flex-wrap: wrap; gap: 8px 22px; }
+.foot-links a { text-decoration: none; }
+.foot-links a:hover { color: #fff; }
+
+/* ---------- responsive ---------- */
+@media (max-width: 960px) {
+  .nav, .logo-tag { display: none; }
+  .header-cta { margin-left: auto; }
+  .hero .wrap { grid-template-columns: 1fr; padding-block: 36px 110px; }
+  .hero-art { height: 360px; --iso-s: .82; }
+  .badge { top: auto; bottom: 8px; right: 4%; width: 100px; height: 100px; }
+  .badge b { font-size: 32px; }
+  .panel-body { grid-template-columns: 1fr; }
+  .steps { grid-template-columns: repeat(2, 1fr); }
+  .step:nth-child(2)::after { display: none; }
+  .reason-grid, .case-card { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .header-cta .btn-line { display: none; }
+  .hero-art { height: 300px; --iso-s: .66; }
+  .hero-art::before { width: 380px; height: 380px; }
+  .panel { padding: 26px 16px 18px; border-radius: 20px; }
+  .panel-cta { width: 100%; justify-content: space-between; }
+  .cats { grid-template-columns: 1fr; }
+  .pains, .steps { grid-template-columns: 1fr; }
+  .pain::after { display: none; }
+  .step::after { display: none; }
+  .chips { position: static; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 18px; }
+  .chip { position: static; }
+  .answer { padding-block: 20px; }
+  .reason { grid-template-columns: 1fr; padding: 22px; }
+  .reason-ico { width: 64px; height: 64px; border-radius: 16px; }
+  .reason-ico svg { width: 42px; height: 42px; }
+  .case-text, .case-chart { padding: 28px 20px; }
+  .faq .a { padding-left: 22px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .float { animation: none; }
+  .btn, .cat, .faq summary::after { transition: none; }
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="g-blue" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2563e6"/><stop offset="1" stop-color="#1dbbd6"/></linearGradient>
+    <linearGradient id="g-soft" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7fb2ff"/><stop offset="1" stop-color="#5fd6e6"/></linearGradient>
+    <linearGradient id="g-down" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#bcd3fb"/><stop offset="1" stop-color="#2563e6"/></linearGradient>
+    <symbol id="i-arrow" viewBox="0 0 10 10"><path d="M3.5 2l3 3-3 3" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-chev-down" viewBox="0 0 10 10"><path d="M2 3.5l3 3 3-3" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  </defs>
+</svg>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="#top" aria-label="SmartSite Express トップへ">
+      <svg class="logo-mark" viewBox="0 0 40 40" aria-hidden="true">
+        <rect x="2" y="4" width="36" height="32" rx="9" fill="url(#g-blue)"/>
+        <rect x="7" y="10" width="26" height="3" rx="1.5" fill="#fff" opacity=".55"/>
+        <path d="M22.5 14.5l-8 10h5.2l-1.7 7 8-10.2h-5.3z" fill="#cdf24a"/>
+      </svg>
+      <span class="logo-type">
+        <span class="logo-name">Smart<span>Site</span></span>
+        <span class="logo-sub">EXPRESS</span>
+      </span>
+      <span class="logo-tag">AIで試作し、プロが仕上げる<br>特急Web制作サービス</span>
+    </a>
+    <nav class="nav" aria-label="ページ内">
+      <a href="#about">SmartSite Expressとは</a>
+      <a href="#flow">進め方</a>
+      <a href="#case">導入事例</a>
+      <a href="#faq">よくある質問</a>
+    </nav>
+    <div class="header-cta">
+      <a class="btn btn-line" href="#cta">資料を見る</a>
+      <a class="btn btn-fill" href="#cta">無料で相談する</a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero-copy">
+        <span class="eyebrow">見せる、決める、すぐ公開。</span>
+        <h1><span class="nw"><span class="grad-text">動くサイト</span>から始める、</span><br><span class="nw"><span class="grad-text dots">特急</span>のWeb制作</span></h1>
+        <p class="hero-lead">SmartSite Express は、AIでつくった<strong>動く試作サイト</strong>を見ながら打ち合わせを進め、そのまま<strong>WordPressで本番化</strong>するWeb制作サービスです。AIの賢さ（Smart）と特急（Express）の速さで、公開までの時間を大きく縮めます。</p>
+        <div class="hero-actions">
+          <a class="btn btn-fill" href="#cta">無料で相談する
+            <svg width="12" height="12" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+          <a class="btn btn-line" href="#flow">進め方を見る</a>
+        </div>
+      </div>
+
+      <div class="hero-art" aria-hidden="true">
+        <div class="badge"><small>構築着手から</small><b>24<span>日</span></b><small>で公開</small></div>
+        <div class="iso">
+          <div class="iso-stage">
+            <div class="layer layer-1">
+              <div class="chrome"><i></i><i></i><i></i><span>WIREFRAME</span></div>
+              <div class="mock"><div class="bar"></div><div class="ln"></div><div class="row"><i></i><i></i><i></i></div></div>
+            </div>
+            <div class="layer layer-2">
+              <div class="chrome"><i></i><i></i><i></i><span>AI PROTOTYPE</span></div>
+              <div class="mock"><div class="bar"></div><div class="ln"></div><div class="row"><i></i><i></i><i></i></div></div>
+            </div>
+            <div class="layer layer-3">
+              <div class="chrome"><i></i><i></i><i></i><span>WORDPRESS · LIVE</span></div>
+              <div class="mock"><div class="bar"></div><div class="ln"></div><div class="row"><i></i><i></i><i></i></div></div>
+            </div>
+          </div>
+        </div>
+        <span class="art-label float" style="left:4%;top:22%;--c:#1dbbd6">AIで試作</span>
+        <span class="art-label float f2" style="left:0;top:58%;--c:#cdf24a">見て決める</span>
+        <span class="art-label float f3" style="right:2%;top:44%;--c:#2563e6">WordPressで公開</span>
+        <svg class="float f2" style="left:58%;top:4%;width:58px;height:58px" viewBox="0 0 60 60">
+          <circle cx="30" cy="30" r="27" fill="url(#g-blue)"/>
+          <path d="M33 13L20 33h9l-3 14 13-21h-9z" fill="#cdf24a"/>
+        </svg>
+        <svg class="float f3" style="left:16%;bottom:6%;width:64px;height:64px" viewBox="0 0 64 64">
+          <g fill="url(#g-soft)">
+            <path d="M28 6h8l1.4 6.2a20 20 0 0 1 5.3 2.2l5.4-3.4 5.6 5.6-3.4 5.4a20 20 0 0 1 2.2 5.3L58 28v8l-6.2 1.4a20 20 0 0 1-2.2 5.3l3.4 5.4-5.6 5.6-5.4-3.4a20 20 0 0 1-5.3 2.2L36 58h-8l-1.4-6.2a20 20 0 0 1-5.3-2.2l-5.4 3.4-5.6-5.6 3.4-5.4a20 20 0 0 1-2.2-5.3L6 36v-8l6.2-1.4a20 20 0 0 1 2.2-5.3L11 15.9l5.6-5.6 5.4 3.4a20 20 0 0 1 5.3-2.2z"/>
+          </g>
+          <circle cx="32" cy="32" r="9" fill="#fff"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <section class="finder" aria-labelledby="finder-title">
+    <div class="wrap">
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <h2 id="finder-title">どんなサイトを、特急でつくりますか？</h2>
+            <p>つくりたいサイトの種類や、いま困っていることから選んでください。</p>
+          </div>
+          <a class="panel-cta" href="#cta">まずは試作の相談から <b>相談する</b></a>
+        </div>
+        <div class="panel-body">
+          <div>
+            <p class="col-title"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1.5 3.5h5l1.5 1.5h6.5v8.5h-13z" fill="#fff"/></svg>サイトの種類から探す</p>
+            <div class="cats">
+              <a class="cat" href="#flow"><span class="cat-ico"><svg viewBox="0 0 26 26"><rect x="4" y="5" width="18" height="17" rx="2" fill="url(#g-blue)"/><path d="M8 9h3v3H8zm7 0h3v3h-3zm-7 5h3v3H8zm7 0h3v3h-3z" fill="#fff"/></svg></span><span><strong>コーポレートサイト</strong><small>会社案内・事業紹介・お知らせ</small></span><span class="chev"><svg><use href="#i-chev-down"/></svg></span></a>
+              <a class="cat" href="#case"><span class="cat-ico"><svg viewBox="0 0 26 26"><path d="M4 10l2-5h14l2 5z" fill="url(#g-soft)"/><rect x="5" y="10" width="16" height="12" rx="1.5" fill="url(#g-blue)"/><rect x="10" y="15" width="6" height="7" fill="#fff"/></svg></span><span><strong>店舗・多店舗サイト</strong><small>店舗ごとの情報・料金表・地図</small></span><span class="chev"><svg><use href="#i-chev-down"/></svg></span></a>
+              <a class="cat" href="#flow"><span class="cat-ico"><svg viewBox="0 0 26 26"><circle cx="13" cy="9" r="4.5" fill="url(#g-soft)"/><path d="M4.5 22a8.5 8.5 0 0 1 17 0z" fill="url(#g-blue)"/></svg></span><span><strong>採用サイト</strong><small>募集要項・社員紹介・応募フォーム</small></span><span class="chev"><svg><use href="#i-chev-down"/></svg></span></a>
+              <a class="cat" href="#flow"><span class="cat-ico"><svg viewBox="0 0 26 26"><rect x="7" y="3" width="12" height="20" rx="2.5" fill="url(#g-blue)"/><rect x="9.5" y="7" width="7" height="4" rx="1" fill="#fff" opacity=".8"/><rect x="9.5" y="16" width="7" height="3" rx="1.5" fill="#cdf24a"/></svg></span><span><strong>サービスLP</strong><small>1ページで伝えて、申込みにつなげる</small></span><span class="chev"><svg><use href="#i-chev-down"/></svg></span></a>
+              <a class="cat" href="#flow"><span class="cat-ico"><svg viewBox="0 0 26 26"><rect x="4" y="6" width="18" height="16" rx="2" fill="url(#g-blue)"/><rect x="4" y="6" width="18" height="5" rx="2" fill="url(#g-soft)"/><path d="M9 3.5v5m8-5v5" stroke="#2563e6" stroke-width="2" stroke-linecap="round"/><circle cx="13" cy="16" r="2.5" fill="#cdf24a"/></svg></span><span><strong>イベント・キャンペーン</strong><small>期間限定の告知ページ</small></span><span class="chev"><svg><use href="#i-chev-down"/></svg></span></a>
+              <a class="cat" href="#faq"><span class="cat-ico"><svg viewBox="0 0 26 26"><path d="M5 13a8 8 0 0 1 14-5.3" fill="none" stroke="url(#g-blue)" stroke-width="2.6" stroke-linecap="round"/><path d="M21 13a8 8 0 0 1-14 5.3" fill="none" stroke="url(#g-soft)" stroke-width="2.6" stroke-linecap="round"/><path d="M19.5 3.5v4.5H15" fill="none" stroke="#2563e6" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 22.5V18H11" fill="none" stroke="#1dbbd6" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span><strong>既存サイトのリニューアル</strong><small>古いCMSや前の業者からの引っ越し</small></span><span class="chev"><svg><use href="#i-chev-down"/></svg></span></a>
+            </div>
+          </div>
+          <div>
+            <p class="col-title"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 1.5v13M3 2h9l-2 3 2 3H3" fill="#fff" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></svg>解決したい課題から探す</p>
+            <div class="issues">
+              <a class="issue" href="#reasons">完成形が見えないまま進むのが不安<span class="tag">よくある</span><span class="go"><svg><use href="#i-arrow"/></svg></span></a>
+              <a class="issue" href="#case">制作に3ヶ月もかけられない<span class="tag">よくある</span><span class="go"><svg><use href="#i-arrow"/></svg></span></a>
+              <a class="issue" href="#reasons">前の業者の画面でしか更新できない<span class="go"><svg><use href="#i-arrow"/></svg></span></a>
+              <a class="issue" href="#reasons">お知らせやイベントを自分たちで載せたい<span class="go"><svg><use href="#i-arrow"/></svg></span></a>
+              <a class="issue" href="#flow">スマホで見づらい<span class="go"><svg><use href="#i-arrow"/></svg></span></a>
+              <a class="issue" href="#reasons">AI検索（AIO・LLMO）に対応したい<span class="tag">注目</span><span class="go"><svg><use href="#i-arrow"/></svg></span></a>
+              <a class="issue" href="#faq">ドメイン・SSL証明書の管理が不安<span class="go"><svg><use href="#i-arrow"/></svg></span></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="about" id="about">
+    <div class="wordmark" aria-hidden="true">SMARTSITE EXPRESS</div>
+    <div class="wrap">
+      <h2 class="sec-title" style="margin-top:28px"><span class="en">ABOUT</span>SmartSite Expressとは？</h2>
+      <p class="ask">Web制作で、こんな<em>お悩み</em>ありませんか？</p>
+      <div class="pains">
+        <div class="pain">
+          <h3>完成形が見えない</h3>
+          <p>デザインの画像だけでは、スマホでの見え方やボタンの押し心地がわからない。できあがってから「思っていたのと違う」となりがち。</p>
+        </div>
+        <div class="pain">
+          <h3>公開まで時間がかかる</h3>
+          <p>要件の整理、デザイン、構築、修正と工程が続き、公開まで3ヶ月前後かかるのが当たり前になっている。</p>
+        </div>
+        <div class="pain">
+          <h3>公開後に自分で直せない</h3>
+          <p>お知らせ一つ載せるにも制作会社に依頼が必要。前の業者の管理画面でしか更新できず、身動きがとれない。</p>
+        </div>
+      </div>
+
+      <div class="down" aria-hidden="true">
+        <svg viewBox="0 0 64 64"><path d="M14 10l18 16 18-16" fill="none" stroke="url(#g-down)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity=".45"/><path d="M14 30l18 16 18-16" fill="none" stroke="url(#g-down)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+
+      <div class="answer">
+        <div class="chips" aria-hidden="true">
+          <span class="chip" style="left:0;top:10px">スマホ対応</span>
+          <span class="chip" style="left:13%;top:54px">動く試作</span>
+          <span class="chip" style="left:29%;top:14px">AI</span>
+          <span class="chip" style="right:27%;top:4px">WordPress</span>
+          <span class="chip" style="right:9%;top:50px">AI検索対応</span>
+          <span class="chip" style="right:-2%;top:6px">更新マニュアル</span>
+        </div>
+        <p class="lead">SmartSite Express は</p>
+        <h3><span class="grad-text">見て・触って決める</span>制作スタイルで、<br><span class="u">公開までの時間を大きく短縮</span>します！</h3>
+      </div>
+    </div>
+  </section>
+
+  <section class="flow" id="flow">
+    <div class="wrap">
+      <div class="flow-head">
+        <h2 class="sec-title"><span class="en">FLOW</span>公開までの進め方</h2>
+        <p>AIが「たたき台」をすぐにつくり、プロが「本番の品質」に仕上げる。<br>カンプの往復と読み違いをなくし、Web制作の待ち時間を減らします。</p>
+      </div>
+      <div class="steps">
+        <article class="step">
+          <span class="step-no">01</span>
+          <div class="step-art" aria-hidden="true">
+            <svg viewBox="0 0 116 96"><rect x="12" y="16" width="70" height="52" rx="7" fill="url(#g-soft)"/><rect x="12" y="16" width="70" height="11" rx="5" fill="url(#g-blue)"/><rect x="20" y="34" width="34" height="5" rx="2.5" fill="#fff"/><rect x="20" y="44" width="24" height="5" rx="2.5" fill="#fff" opacity=".7"/><path d="M70 50c0-12 10-22 22-22s16 8 16 14-6 14-16 14l-10 8 2-9c-8-2-14-2-14-5z" fill="#fff" stroke="#2563e6" stroke-width="2.5"/><text x="88" y="48" text-anchor="middle" font-family="Lexend, sans-serif" font-weight="800" font-size="13" fill="#2563e6">AI</text></svg>
+          </div>
+          <h3><small>HEARING &amp; PROTOTYPE</small>ヒアリングとAI試作</h3>
+          <p>打ち合わせの内容をもとに、AIで動く試作サイトをつくります。提案の場で、実際の画面を触って確かめられます。</p>
+        </article>
+        <article class="step">
+          <span class="step-no">02</span>
+          <div class="step-art" aria-hidden="true">
+            <svg viewBox="0 0 116 96"><rect x="34" y="8" width="44" height="78" rx="9" fill="url(#g-blue)"/><rect x="39" y="18" width="34" height="56" rx="3" fill="#fff"/><rect x="43" y="23" width="26" height="14" rx="2" fill="#dbe7fb"/><rect x="43" y="42" width="20" height="4" rx="2" fill="#bcd3fb"/><rect x="43" y="50" width="16" height="4" rx="2" fill="#bcd3fb"/><rect x="43" y="62" width="26" height="7" rx="3.5" fill="#cdf24a"/><circle cx="88" cy="58" r="15" fill="#fff" stroke="#1dbbd6" stroke-width="3"/><path d="M81 58l5 5 9-10" fill="none" stroke="#1dbbd6" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <h3><small>REVIEW</small>試作を見ながら調整</h3>
+          <p>文章・写真・色・ページ構成を、画面を見ながら決めていきます。スマホでの見え方もその場で確認できます。</p>
+        </article>
+        <article class="step">
+          <span class="step-no">03</span>
+          <div class="step-art" aria-hidden="true">
+            <svg viewBox="0 0 116 96"><rect x="8" y="22" width="46" height="36" rx="6" fill="url(#g-soft)"/><rect x="62" y="22" width="46" height="36" rx="6" fill="url(#g-blue)"/><path d="M47 72h22" stroke="#bcd3fb" stroke-width="3" stroke-linecap="round"/><circle cx="85" cy="40" r="11" fill="none" stroke="#fff" stroke-width="3"/><text x="85" y="45" text-anchor="middle" font-family="Lexend, sans-serif" font-weight="800" font-size="13" fill="#fff">W</text><path d="M18 34h26M18 42h18M18 50h22" stroke="#fff" stroke-width="3" stroke-linecap="round"/><path d="M50 40h10m-4-4l4 4-4 4" fill="none" stroke="#2563e6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <h3><small>BUILD</small>WordPressで本番化</h3>
+          <p>決まった試作を、更新できるWordPressのサイトに組み立てます。試作と本番を同じ画面幅で並べ、見た目のズレがないか照合します。</p>
+        </article>
+        <article class="step">
+          <span class="step-no">04</span>
+          <div class="step-art" aria-hidden="true">
+            <svg viewBox="0 0 116 96"><path d="M58 8c14 8 20 24 18 42H40c-2-18 4-34 18-42z" fill="url(#g-blue)"/><circle cx="58" cy="32" r="7" fill="#fff"/><path d="M40 40l-12 14 14-2zM76 40l12 14-14-2z" fill="url(#g-soft)"/><path d="M48 58c2 10 6 18 10 26 4-8 8-16 10-26z" fill="#cdf24a"/></svg>
+          </div>
+          <h3><small>LAUNCH &amp; SUPPORT</small>公開と更新サポート</h3>
+          <p>確認用のURLで最終チェックしてから公開。お知らせやイベントの更新手順を、画面写真つきの資料でお渡しします。</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="reasons" id="reasons">
+    <div class="wrap">
+      <h2 class="sec-title"><span class="en">REASONS</span>速くて、確かな理由</h2>
+      <div class="reason-grid">
+        <article class="reason">
+          <div class="reason-ico" aria-hidden="true"><svg viewBox="0 0 56 56"><rect x="6" y="10" width="44" height="34" rx="6" fill="url(#g-blue)"/><rect x="6" y="10" width="44" height="8" rx="4" fill="url(#g-soft)"/><path d="M24 25v12l10-6z" fill="#cdf24a"/></svg></div>
+          <div><h3>提案の段階で、動くサイトを見せます</h3><p>見積書やデザイン画像だけで判断する必要はありません。AIでつくった試作サイトをクリックし、スクロールし、スマホで開いて確かめてから進められます。</p></div>
+        </article>
+        <article class="reason">
+          <div class="reason-ico" aria-hidden="true"><svg viewBox="0 0 56 56"><rect x="5" y="12" width="20" height="30" rx="4" fill="url(#g-soft)"/><rect x="31" y="12" width="20" height="30" rx="4" fill="url(#g-blue)"/><path d="M9 20h12M9 26h8M35 20h12M35 26h8" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/><circle cx="28" cy="44" r="8" fill="#cdf24a"/><path d="M24.5 44l2.5 2.5 4.5-5" fill="none" stroke="#1d4fc4" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div><h3>試作と本番のズレを、数値で確かめます</h3><p>本番化したあと、試作と同じ画面幅で並べて、要素の位置・大きさ・文字・色を照合します。「試作ではよかったのに」を残しません。</p></div>
+        </article>
+        <article class="reason">
+          <div class="reason-ico" aria-hidden="true"><svg viewBox="0 0 56 56"><rect x="8" y="8" width="40" height="40" rx="8" fill="url(#g-blue)"/><path d="M16 20h24M16 28h16" stroke="#fff" stroke-width="3" stroke-linecap="round"/><path d="M33 42l3-9 10-10 6 6-10 10z" fill="#cdf24a" stroke="#1d4fc4" stroke-width="2" stroke-linejoin="round"/></svg></div>
+          <div><h3>公開後は、自社で更新できます</h3><p>お知らせ・イベント・店舗情報は、WordPressの管理画面から更新できます。手順は管理画面の写真つき資料で説明します。</p></div>
+        </article>
+        <article class="reason">
+          <div class="reason-ico" aria-hidden="true"><svg viewBox="0 0 56 56"><circle cx="24" cy="24" r="15" fill="url(#g-blue)"/><circle cx="24" cy="24" r="8" fill="#fff"/><path d="M35 35l12 12" stroke="#1d4fc4" stroke-width="6" stroke-linecap="round"/><path d="M43 9l1.6 3.6L48 14l-3.4 1.4L43 19l-1.6-3.6L38 14l3.4-1.4z" fill="#cdf24a"/></svg></div>
+          <div><h3>AI検索にも、最初から対応します</h3><p>ページの説明文やSNS共有時の表示、検索エンジンやAIが読み取る構造化データ（JSON-LD）など、AI検索（AIO・LLMO）の基本対応を標準で行います。</p></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="case" id="case">
+    <div class="wrap">
+      <div class="case-card">
+        <div class="case-text">
+          <span class="case-label">CASE</span>
+          <p class="case-who">ペット販売・トリミング・ペットホテルを展開する企業さま（埼玉・群馬）</p>
+          <h2>前の業者の管理から、自社で更新できるサイトへ</h2>
+          <ul class="case-list">
+            <li>提案の時点で、AIでつくった試作サイトを見ながら構成とデザインを決定</li>
+            <li>店舗・イベント・お知らせを、管理画面から自社で更新できる形に</li>
+            <li>お問い合わせフォームは自社ドメインのメールから送信（迷惑メール対策の送信認証つき）</li>
+            <li>前のサイトの証明書切れで表示が止まった際も、旧サイトを一時復旧しながら新サイトを並行して構築</li>
+          </ul>
+        </div>
+        <div class="case-chart">
+          <h3>公開までの期間</h3>
+          <div class="bars" role="img" aria-label="提案時の計画は10週間（70日）、実績は構築着手から公開まで24日">
+            <div class="bar-row bar-plan">
+              <div class="lbl"><span>提案時の計画（要件整理〜公開）</span><span class="val"><b>10</b>週</span></div>
+              <div class="track"><i></i></div>
+            </div>
+            <div class="bar-row bar-real">
+              <div class="lbl"><span>実績（構築着手〜公開）</span><span class="val"><b>24</b>日</span></div>
+              <div class="track"><i></i></div>
+              <div class="scale"><span>0</span><span>35日</span><span>70日</span></div>
+            </div>
+          </div>
+          <p class="note">※構成とデザインは提案時の試作で固まっていたため、WordPressの構築に着手した日から公開日までの日数です。期間はページ数や原稿・写真のそろい具合によって変わります。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="faq" id="faq">
+    <div class="wrap">
+      <h2 class="sec-title"><span class="en">FAQ</span>よくある質問</h2>
+      <div class="faq-list">
+        <details open>
+          <summary>AIだけでサイトをつくるのですか？</summary>
+          <p class="a">AIを使うのは試作までです。本番のサイトは当社のエンジニアがWordPressで組み立て、表示・フォーム・セキュリティを確認してから公開します。</p>
+        </details>
+        <details>
+          <summary>どのくらいの期間で公開できますか？</summary>
+          <p class="a">ページ数や、原稿・写真のそろい具合によって変わります。導入事例では、構築に着手してから24日で公開しました。最初のご相談で目安をお伝えします。</p>
+        </details>
+        <details>
+          <summary>原稿や写真がまだそろっていません。</summary>
+          <p class="a">試作の段階では仮の文章と画像で形をお見せし、画面を見ながら必要な原稿を一緒に洗い出します。写真撮影のご相談も承ります。</p>
+        </details>
+        <details>
+          <summary>いまのサイトの内容やドメインを引き継げますか？</summary>
+          <p class="a">残したいページやお知らせを確認したうえで新しいサイトへ移します。ドメインやSSL証明書、メールの切り替えもあわせてサポートします。</p>
+        </details>
+        <details>
+          <summary>公開したあとの更新や保守はどうなりますか？</summary>
+          <p class="a">日々のお知らせやイベントは、管理画面からご自身で更新できます。サーバーやWordPressの保守は、月額の保守プランでお受けします。</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta" id="cta">
+    <div class="wrap">
+      <h2>まずは、御社サイトの「試作」から。</h2>
+      <p>ご相談の内容をもとに、動く試作サイトをご覧いただけます。</p>
+      <div class="cta-actions">
+        <a class="btn btn-white" href="#cta">無料で相談する</a>
+        <a class="btn btn-ghost" href="#cta">サービス資料を見る</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <a class="logo" href="#top">
+      <svg class="logo-mark" viewBox="0 0 40 40" aria-hidden="true">
+        <rect x="2" y="4" width="36" height="32" rx="9" fill="url(#g-blue)"/>
+        <rect x="7" y="10" width="26" height="3" rx="1.5" fill="#fff" opacity=".55"/>
+        <path d="M22.5 14.5l-8 10h5.2l-1.7 7 8-10.2h-5.3z" fill="#cdf24a"/>
+      </svg>
+      <span class="logo-type"><span class="logo-name">Smart<span>Site</span></span><span class="logo-sub">EXPRESS</span></span>
+    </a>
+    <nav class="foot-links" aria-label="フッター">
+      <a href="#about">SmartSite Expressとは</a>
+      <a href="#flow">進め方</a>
+      <a href="#case">導入事例</a>
+      <a href="#faq">よくある質問</a>
+    </nav>
+    <p>提供：株式会社ビビッドソウル</p>
+  </div>
+</footer>
+</body>
+</html>
