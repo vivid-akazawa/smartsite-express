@@ -634,7 +634,8 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/MotionPathPlugin.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/CustomEase.min.js"></script>
 <script>
-// 動きの文法は参考サイト（GTN採用サイト）に合わせる：独自イージング・一度だけ再生・80%地点で発火・視差は scrub
+// 動きの文法は参考サイト（GTN採用サイト）に合わせる：独自イージング・一度だけ再生・80%地点で発火。
+// 視差（スクロールに遅れてついてくる動き）は、カードからはみ出して崩れて見えるため使わない
 (() => {
   const g = window.gsap;
   if (!g || !window.ScrollTrigger) return;
@@ -656,8 +657,6 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
       .from(".layer", { "--drop": "180px", autoAlpha: 0, stagger: 0.25, duration: 1.1 }, 0.35)
       .from(".badge", { scale: 0.3, rotation: -40, autoAlpha: 0, ease: "back.out(1.8)", duration: 0.8 }, 1.2)
       .from(".hero-art .float", { autoAlpha: 0, stagger: 0.12, duration: 0.6 }, 1.3);
-
-    g.to(".hero-art", { y: -50, ease: "none", scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: 1.5 } });
 
     // スクロールで一度だけ現れる
     const reveal = (targets, vars, trigger) => {
@@ -684,12 +683,6 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
     reveal(".track i", { scaleX: 0, autoAlpha: 1, transformOrigin: "left center", stagger: 0.25, duration: 1.4 }, ".bars");
     reveal(".faq details", { y: 20, stagger: 0.08 }, ".faq-list");
     reveal(".cta h2, .cta p, .cta-actions", { y: 24, stagger: 0.12 }, ".cta");
-
-    // 視差：スクロールより少し遅れてついてくる
-    const shift = window.innerWidth < 768 ? "2rem" : "4rem";
-    g.utils.toArray(".step-art, .reason-ico, .bars").forEach((el) => {
-      g.fromTo(el, { y: shift }, { y: 0, ease: "none", scrollTrigger: { trigger: el, start: "top bottom", end: "bottom top", scrub: 3 } });
-    });
 
     // お悩み→答え：矢印が線をなぞって進み、答えの背景が回転しながら収まる
     const path = $("#route-drawn");
