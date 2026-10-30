@@ -82,9 +82,10 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .iso { position: absolute; left: 50%; top: 52%; width: 0; height: 0; transform: scale(var(--iso-s, 1)); }
 .iso-stage { position: absolute; left: -150px; top: -105px; width: 300px; height: 210px; transform: rotateX(58deg) rotateZ(-42deg); transform-style: preserve-3d; }
 .layer { position: absolute; inset: 0; border-radius: 14px; overflow: hidden; }
-.layer-1 { transform: translateZ(0); background: #c9dbf7; box-shadow: 0 0 0 1px rgba(37,99,230,.15), 18px 18px 30px rgba(30,70,160,.18); }
-.layer-2 { transform: translateZ(70px); background: linear-gradient(135deg, #6ad7e8, #3a8ff0); box-shadow: 0 0 0 1px rgba(255,255,255,.35); opacity: .92; }
-.layer-3 { transform: translateZ(140px); background: #fff; box-shadow: 0 0 0 1px rgba(37,99,230,.12), 22px 22px 40px rgba(30,70,160,.22); }
+.iso-wrap { position: absolute; inset: 0; }
+.layer-1 { transform: translateZ(calc(0px + var(--drop, 0px))); background: #c9dbf7; box-shadow: 0 0 0 1px rgba(37,99,230,.15), 18px 18px 30px rgba(30,70,160,.18); }
+.layer-2 { transform: translateZ(calc(70px + var(--drop, 0px))); background: linear-gradient(135deg, #6ad7e8, #3a8ff0); box-shadow: 0 0 0 1px rgba(255,255,255,.35); opacity: .92; }
+.layer-3 { transform: translateZ(calc(140px + var(--drop, 0px))); background: #fff; box-shadow: 0 0 0 1px rgba(37,99,230,.12), 22px 22px 40px rgba(30,70,160,.22); }
 .chrome { height: 24px; display: flex; align-items: center; gap: 5px; padding: 0 10px; background: rgba(255,255,255,.55); }
 .layer-3 .chrome { background: var(--grad); }
 .chrome i { width: 6px; height: 6px; border-radius: 50%; background: rgba(21,36,74,.25); }
@@ -135,7 +136,13 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .issue .go svg { width: 9px; height: 9px; }
 
 /* ---------- wordmark & about ---------- */
-.wordmark { font-family: var(--font-en); font-weight: 800; font-size: clamp(44px, 11.2vw, 150px); line-height: .95; letter-spacing: -.02em; text-align: center; margin-top: 64px; background: linear-gradient(100deg, #c5d8fb 0%, #cfe2fb 50%, #c4eef4 100%); -webkit-background-clip: text; background-clip: text; color: transparent; user-select: none; overflow-wrap: anywhere; }
+/* 参考サイトの loopText と同じく、2本並べて -50% 送ると継ぎ目なく流れ続ける */
+.loop { overflow: hidden; user-select: none; pointer-events: none; }
+.loop-track { display: flex; width: max-content; animation: loop-x 60s linear infinite; }
+.loop-track span { flex-shrink: 0; padding-right: .45em; white-space: nowrap; font-family: var(--font-en); font-weight: 800; line-height: .95; letter-spacing: -.02em; }
+@keyframes loop-x { to { transform: translateX(-50%); } }
+.wordmark { margin-top: 64px; }
+.wordmark span { font-size: clamp(44px, 11.2vw, 150px); background: linear-gradient(100deg, #c5d8fb 0%, #cfe2fb 50%, #c4eef4 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .about { padding-block: 8px 72px; text-align: center; }
 .sec-title { font-size: clamp(24px, 3vw, 32px); font-weight: 900; }
 .sec-title .en { display: block; font-family: var(--font-en); font-size: 12px; font-weight: 700; letter-spacing: .3em; color: var(--blue); margin-bottom: 8px; }
@@ -146,8 +153,13 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .pain::after { content: ""; position: absolute; left: 50%; bottom: -10px; width: 20px; height: 20px; background: #fff; transform: translateX(-50%) rotate(45deg); border-radius: 3px; }
 .pain h3 { font-size: 16px; color: var(--blue); text-align: center; }
 .pain p { font-size: 13.5px; color: var(--ink-soft); margin-top: 10px; line-height: 1.75; }
-.down { display: grid; justify-items: center; margin: 38px auto 18px; width: 64px; }
-.down svg { width: 64px; height: 64px; }
+/* お悩み→答えをつなぐ曲線。スクロールに合わせて矢印が線の上を進む（参考サイトの moveArrow） */
+.route { position: relative; width: min(600px, 100%); margin: 30px auto 0; }
+.route-svg { display: block; width: 100%; height: auto; overflow: visible; }
+.route-arrow { position: absolute; left: calc(50% - 22px); bottom: -22px; width: 44px; height: 44px; transform: rotate(90deg); }
+.answer-body { position: relative; padding: 30px 24px 34px; }
+.answer-bg { position: absolute; inset: 0; border-radius: 28px; background: linear-gradient(135deg, #ffffff 0%, #eaf3ff 100%); box-shadow: var(--shadow); }
+.answer-body > p, .answer-body > h3 { position: relative; }
 .answer { position: relative; max-width: 760px; margin: 0 auto; padding-block: 104px 24px; }
 .answer p.lead { font-size: 15px; font-weight: 700; }
 .answer h3 { font-size: clamp(22px, 3vw, 31px); font-weight: 900; margin-top: 4px; line-height: 1.55; }
@@ -224,7 +236,9 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 
 /* ---------- cta & footer ---------- */
 .cta { background: var(--grad); color: #fff; text-align: center; padding-block: 72px; position: relative; overflow: hidden; }
-.cta::before { content: "EXPRESS"; position: absolute; left: 50%; bottom: -24px; transform: translateX(-50%); font-family: var(--font-en); font-weight: 800; font-size: clamp(80px, 16vw, 210px); color: rgba(255,255,255,.08); line-height: 1; white-space: nowrap; pointer-events: none; }
+.cta-loop { position: absolute; left: 0; right: 0; bottom: -20px; }
+.cta-loop .loop-track { animation-duration: 40s; animation-direction: reverse; }
+.cta-loop span { font-size: clamp(80px, 16vw, 210px); color: rgba(255,255,255,.08); }
 .cta .wrap { position: relative; }
 .cta h2 { font-size: clamp(24px, 3.4vw, 36px); font-weight: 900; }
 .cta p { margin-top: 12px; font-size: 15px; opacity: .95; }
@@ -273,7 +287,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
   .faq .a { padding-left: 22px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .float { animation: none; }
+  .float, .loop-track { animation: none; }
   .btn, .cat, .faq summary::after { transition: none; }
 }
 </style>
@@ -333,7 +347,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 
       <div class="hero-art" aria-hidden="true">
         <div class="badge"><small>構築着手から</small><b>24<span>日</span></b><small>で公開</small></div>
-        <div class="iso">
+        <div class="iso-wrap"><div class="iso">
           <div class="iso-stage">
             <div class="layer layer-1">
               <div class="chrome"><i></i><i></i><i></i><span>WIREFRAME</span></div>
@@ -348,7 +362,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
               <div class="mock"><div class="bar"></div><div class="ln"></div><div class="row"><i></i><i></i><i></i></div></div>
             </div>
           </div>
-        </div>
+        </div></div>
         <span class="art-label float" style="left:4%;top:22%;--c:#1dbbd6">AIで試作</span>
         <span class="art-label float f2" style="left:0;top:58%;--c:#cdf24a">見て決める</span>
         <span class="art-label float f3" style="right:2%;top:44%;--c:#2563e6">WordPressで公開</span>
@@ -406,7 +420,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
   </section>
 
   <section class="about" id="about">
-    <div class="wordmark" aria-hidden="true">SMARTSITE EXPRESS</div>
+    <div class="loop wordmark" aria-hidden="true"><div class="loop-track"><span>SMARTSITE EXPRESS</span><span>SMARTSITE EXPRESS</span></div></div>
     <div class="wrap">
       <h2 class="sec-title" style="margin-top:28px"><span class="en">ABOUT</span>SmartSite Expressとは？</h2>
       <p class="ask">Web制作で、こんな<em>お悩み</em>ありませんか？</p>
@@ -425,8 +439,15 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
         </div>
       </div>
 
-      <div class="down" aria-hidden="true">
-        <svg viewBox="0 0 64 64"><path d="M14 10l18 16 18-16" fill="none" stroke="url(#g-down)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity=".45"/><path d="M14 30l18 16 18-16" fill="none" stroke="url(#g-down)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div class="route" aria-hidden="true">
+        <svg class="route-svg" viewBox="0 0 600 170">
+          <path d="M300 4 C 300 70, 110 40, 150 98 S 450 104, 430 134 S 300 140, 300 166" fill="none" stroke="#bcd3fb" stroke-width="3" stroke-dasharray="2 10" stroke-linecap="round"/>
+          <path id="route-drawn" d="M300 4 C 300 70, 110 40, 150 98 S 450 104, 430 134 S 300 140, 300 166" fill="none" stroke="url(#g-blue)" stroke-width="3.5" stroke-linecap="round"/>
+        </svg>
+        <svg class="route-arrow" viewBox="0 0 44 44">
+          <circle cx="22" cy="22" r="20" fill="url(#g-blue)"/>
+          <path d="M17 13l10 9-10 9" fill="none" stroke="#cdf24a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
       </div>
 
       <div class="answer">
@@ -438,8 +459,11 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
           <span class="chip" style="right:9%;top:50px">AI検索対応</span>
           <span class="chip" style="right:-2%;top:6px">更新マニュアル</span>
         </div>
-        <p class="lead">SmartSite Express は</p>
-        <h3><span class="grad-text">見て・触って決める</span>制作スタイルで、<br><span class="u">公開までの時間を大きく短縮</span>します！</h3>
+        <div class="answer-body">
+          <div class="answer-bg" aria-hidden="true"></div>
+          <p class="lead">SmartSite Express は</p>
+          <h3><span class="grad-text">見て・触って決める</span>制作スタイルで、<br><span class="u">公開までの時間を大きく短縮</span>します！</h3>
+        </div>
       </div>
     </div>
   </section>
@@ -573,6 +597,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
   </section>
 
   <section class="cta" id="cta">
+    <div class="loop cta-loop" aria-hidden="true"><div class="loop-track"><span>EXPRESS</span><span>EXPRESS</span></div></div>
     <div class="wrap">
       <h2>まずは、御社サイトの「試作」から。</h2>
       <p>ご相談の内容をもとに、動く試作サイトをご覧いただけます。</p>
@@ -603,5 +628,88 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
     <p>提供：株式会社ビビッドソウル</p>
   </div>
 </footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/MotionPathPlugin.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/CustomEase.min.js"></script>
+<script>
+// 動きの文法は参考サイト（GTN採用サイト）に合わせる：独自イージング・一度だけ再生・80%地点で発火・視差は scrub
+(() => {
+  const g = window.gsap;
+  if (!g || !window.ScrollTrigger) return;
+  g.registerPlugin(ScrollTrigger);
+  const hasPath = !!window.MotionPathPlugin;
+  if (hasPath) g.registerPlugin(MotionPathPlugin);
+  let ease = "power3.out";
+  if (window.CustomEase) {
+    g.registerPlugin(CustomEase);
+    ease = CustomEase.create("sse", "0.6, 0.1, 0.3, 0.88");
+  }
+  const $ = (s) => document.querySelector(s);
+
+  g.matchMedia().add("(prefers-reduced-motion: no-preference)", () => {
+    // ヒーロー：読み込み時に、文字→3層が上から積み重なる→バッジ
+    g.timeline({ defaults: { ease, duration: 1 } })
+      .from(".hero .eyebrow, .hero h1 .nw, .hero-lead, .hero-actions", { y: 30, autoAlpha: 0, stagger: 0.12 })
+      .from(".iso-wrap", { y: 40, autoAlpha: 0 }, 0.1)
+      .from(".layer", { "--drop": "180px", autoAlpha: 0, stagger: 0.25, duration: 1.1 }, 0.35)
+      .from(".badge", { scale: 0.3, rotation: -40, autoAlpha: 0, ease: "back.out(1.8)", duration: 0.8 }, 1.2)
+      .from(".hero-art .float", { autoAlpha: 0, stagger: 0.12, duration: 0.6 }, 1.3);
+
+    g.to(".hero-art", { y: -50, ease: "none", scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: 1.5 } });
+
+    // スクロールで一度だけ現れる
+    const reveal = (targets, vars, trigger) => {
+      if (!document.querySelector(targets)) return;
+      g.from(targets, { autoAlpha: 0, duration: 1, ease, ...vars, scrollTrigger: { trigger: trigger || targets, start: "top 80%", once: true } });
+    };
+    reveal(".panel", { y: 40 });
+    reveal(".cat", { y: 20, stagger: 0.06, duration: 0.7 }, ".cats");
+    reveal(".issue", { x: 24, stagger: 0.06, duration: 0.7 }, ".issues");
+    g.utils.toArray(".sec-title").forEach((el) => {
+      g.from(el, { y: 24, autoAlpha: 0, duration: 1, ease, scrollTrigger: { trigger: el, start: "top 80%", once: true } });
+    });
+    reveal(".ask", { y: 20 });
+    reveal(".pain", { y: 30, stagger: 0.15 }, ".pains");
+    reveal(".chip", { scale: 0.7, y: 20, transformOrigin: "bottom center", stagger: 0.08, duration: 0.8 }, ".answer");
+    reveal(".answer-body .lead, .answer-body h3", { y: 20, stagger: 0.12 }, ".answer-body");
+    reveal(".flow-head p", { y: 20 }, ".flow-head");
+    reveal(".step", { y: 40, stagger: 0.15 }, ".steps");
+    reveal(".step-art svg", { scale: 0.7, stagger: 0.15, delay: 0.2 }, ".steps");
+    g.utils.toArray(".reason").forEach((el, i) => {
+      g.from(el, { x: i % 2 ? 30 : -30, autoAlpha: 0, duration: 1, ease, scrollTrigger: { trigger: el, start: "top 80%", once: true } });
+    });
+    reveal(".case-card", { y: 40 });
+    reveal(".track i", { scaleX: 0, autoAlpha: 1, transformOrigin: "left center", stagger: 0.25, duration: 1.4 }, ".bars");
+    reveal(".faq details", { y: 20, stagger: 0.08 }, ".faq-list");
+    reveal(".cta h2, .cta p, .cta-actions", { y: 24, stagger: 0.12 }, ".cta");
+
+    // 視差：スクロールより少し遅れてついてくる
+    const shift = window.innerWidth < 768 ? "2rem" : "4rem";
+    g.utils.toArray(".step-art, .reason-ico, .bars").forEach((el) => {
+      g.fromTo(el, { y: shift }, { y: 0, ease: "none", scrollTrigger: { trigger: el, start: "top bottom", end: "bottom top", scrub: 3 } });
+    });
+
+    // お悩み→答え：矢印が線をなぞって進み、答えの背景が回転しながら収まる
+    const path = $("#route-drawn");
+    const arrow = $(".route-arrow");
+    if (hasPath && path && arrow) {
+      const len = path.getTotalLength();
+      const along = { path, align: path, alignOrigin: [0.5, 0.5], autoRotate: true };
+      g.set(arrow, { motionPath: { ...along, end: 0 } });
+      g.set(path, { strokeDasharray: len, strokeDashoffset: len });
+      g.timeline({ scrollTrigger: { trigger: ".route", start: "top 75%", end: "bottom 45%", scrub: 1, invalidateOnRefresh: true } })
+        .to(arrow, { motionPath: along, ease: "none" }, 0)
+        .to(path, { strokeDashoffset: 0, ease: "none" }, 0);
+    }
+    g.fromTo(".answer-bg",
+      { xPercent: -40, yPercent: -60, rotation: -14, autoAlpha: 0 },
+      { xPercent: 0, yPercent: 0, rotation: 0, autoAlpha: 1, ease: "none", scrollTrigger: { trigger: ".answer-body", start: "top 90%", end: "center 60%", scrub: 2 } });
+  });
+
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => ScrollTrigger.refresh());
+})();
+</script>
 </body>
 </html>
